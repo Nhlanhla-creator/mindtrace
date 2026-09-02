@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MindTrace — Diagnose how students think</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/"><span class="mark">M</span><span>MindTrace</span></a><span class="tagline">Diagnosing how students think, not just what they get wrong.</span><nav><button id="compareToggle" class="ghost">Compare <kbd>Ctrl⇧C</kbd></button><button id="libraryToggle" class="ghost">Library</button></nav></header>
+  <main class="layout">
+    <section class="main-column">
+      <div class="eyebrow">COGNITIVE DIAGNOSTICS / <span id="stageLabel">READY</span></div>
+      <h1>Show me how you think.</h1><p class="lede">Explain a concept in your own words. MindTrace retrieves documented mental models, then uses AI only to confirm the evidence.</p>
+      <div class="examples"><div class="section-label">TRY A CURATED EXAMPLE</div><div id="exampleCards" class="example-grid"></div></div>
+      <div id="comparePanel" class="compare-panel hidden"><div class="section-label">COMPARE TWO REASONING PATTERNS</div><div class="compare-grid"><textarea id="compareA" placeholder="First explanation..."></textarea><textarea id="compareB" placeholder="Second explanation..."></textarea></div></div>
+      <div class="input-card"><div class="input-head"><label for="explanation">YOUR EXPLANATION</label><select id="topic"><option value="">All topics</option><option>Physics</option><option>Math</option><option>Biology</option></select></div><textarea id="explanation" placeholder="For example: Heavier objects fall faster because gravity pulls harder on them..."></textarea><div class="input-actions"><div class="input-tools"><button id="micButton" class="tool">● <span>Speak</span></button><label class="tool file-label">▣ <span>OCR image</span><input id="imageInput" type="file" accept="image/*"></label><span class="shortcut">⌘↵ to analyze · Esc to clear</span></div><button id="analyzeButton" class="primary">Analyze reasoning <span>→</span></button></div><div id="ocrStatus" class="small muted"></div></div>
+      <div id="result" class="result-card empty"><div class="empty-icon">◌</div><h2>Your reasoning profile starts here.</h2><p>Submit an explanation to see the mental model behind it.</p></div>
+      <div id="compareResults" class="compare-results hidden"></div>
+    </section>
+    <aside class="sidebar"><div class="panel profile-panel"><div class="panel-title"><span>STUDENT PROFILE</span><span id="submissionCount">0 SUBMISSIONS</span></div><div id="drift" class="drift neutral"><span class="drift-arrow">↗</span><span>Awaiting your first explanation</span></div><div id="profileBars" class="profile-bars"><div class="muted small">Patterns will build as you explain.</div></div><div id="recommendation" class="recommendation"><span class="rec-label">NEXT RECOMMENDATION</span><strong>Build your baseline</strong><span>Start with any concept above.</span></div></div><div class="panel"><div class="panel-title">WHY THIS MATTERS</div><blockquote>“Students learn more when instruction makes their thinking visible.”</blockquote><p class="small muted">A wrong answer is a signal, not a verdict. Misconception-based feedback targets the model generating the error, so learners can revise the idea itself.</p></div><div class="panel share-panel"><div class="panel-title">SHARE DIAGNOSIS</div><p class="small muted">Create a portable link to this explanation and its evidence.</p><button id="shareButton" class="secondary">Copy shareable link</button><div id="shareStatus" class="small"></div></div><div class="panel room-panel"><div class="panel-title">COLLABORATION ROOM</div><p class="small muted">Share a room and see peer diagnoses in real time.</p><div class="room-controls"><input id="roomId" placeholder="Room ID"><button id="roomButton" class="secondary">Join</button></div><div id="roomStatus" class="small muted"></div></div></aside>
+  </main>
+  <div id="libraryModal" class="modal hidden"><div class="modal-card"><button id="closeLibrary" class="close">×</button><div class="eyebrow">KNOWLEDGE BASE / <span id="libraryCount"></span></div><h2>Misconception library</h2><input id="librarySearch" placeholder="Search statements, topics, or sources..."><div id="libraryList" class="library-list"></div></div></div>
+  <script src="/static/vendor/tesseract.min.js"></script>
+  <script src="/static/js/app.js"></script>
+</body></html>

@@ -27,9 +27,12 @@ uvicorn backend.app.main:app --reload
 Open http://localhost:8000
 
 ## Current status
-- Scaffold complete (FastAPI + placeholder UI)
-- No misconception KB, retrieval, or LLM calls yet
-- Demo mode flag ready in .env (USE_CACHED_RESPONSES)
+- FastAPI backend with `/health`, retrieval, diagnosis, profile, library, rooms, and WebSocket routes
+- 25-entry documented misconception knowledge base across Physics, Math, and Biology
+- Deterministic TF-IDF retrieval with candidate scores and matched trigger phrases
+- Candidate-constrained Claude confirmation with safe retrieval fallback
+- Working Ink & Amber responsive demo shell with cached examples, compare mode, profile drift, sharing, library, and collaboration UI
+- Client-side speech recognition works in supported browsers; Tesseract OCR expects a local vendored asset at `/static/vendor/tesseract.min.js`
 
 ## Demo mode
 Set `USE_CACHED_RESPONSES=true` in `backend/.env` once the diagnosis pipeline is built.
