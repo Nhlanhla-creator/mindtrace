@@ -71,5 +71,28 @@ class MisconceptionRetriever:
             )
         return results
 
+    def landscape(self, text: str, topic: str | None = None) -> list[dict[str, Any]]:
+        """Return every knowledge-base cell for live cognitive-landscape views."""
+        cleaned_text = text.strip()
+        if not cleaned_text:
+            return []
+        query_vector = self.vectorizer.transform([cleaned_text])
+        phrase_scores = cosine_similarity(query_vector, self.phrase_matrix).ravel()
+        normalized_topic = topic.casefold() if topic else None
+        cells = []
+        for index, entry in enumerate(self.entries):
+            if normalized_topic and entry["topic"].casefold() != normalized_topic:
+                continue
+            start, end = self.phrase_ranges[index]
+            phrase_index = max(range(start, end), key=phrase_scores.__getitem__)
+            cells.append({
+                "id": entry["id"],
+                "topic": entry["topic"],
+                "statement": entry["misconception_statement"],
+                "score": round(float(phrase_scores[phrase_index]), 4),
+                "best_trigger_phrase": entry["typical_trigger_phrases"][phrase_index - start],
+            })
+        return sorted(cells, key=lambda cell: (-cell["score"], cell["id"]))
+
 
 retriever = MisconceptionRetriever()

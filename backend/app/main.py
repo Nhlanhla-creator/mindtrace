@@ -68,6 +68,15 @@ def retrieve_misconceptions(request: ExplanationRequest):
     return {"query": request.text, "topic": request.topic, "count": len(results), "results": results}
 
 
+@app.post("/api/landscape")
+def cognitive_landscape(request: ExplanationRequest):
+    return {
+        "query": request.text,
+        "topic": request.topic,
+        "cells": retriever.landscape(request.text, request.topic),
+    }
+
+
 @app.get("/api/profile/{session_id}")
 def get_profile(session_id: str):
     return PROFILES.setdefault(session_id, Profile()).snapshot()

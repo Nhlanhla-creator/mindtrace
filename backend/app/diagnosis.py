@@ -136,10 +136,27 @@ def diagnose(text: str, topic: str | None = None) -> dict[str, Any]:
     if "result_state" not in result:
         result["result_state"] = "correct_model" if result.get("diagnosis") is None else "misconception"
     matched_entry = _entry_by_id(result.get("diagnosis"))
+    correction = result.get("correction") or ""
+    if matched_entry:
+        explanation_paragraphs = [
+            correction,
+            f"The key idea to revise is: {matched_entry['correct_concept']} This gives you a more reliable model to use when explaining a new example."
+        ]
+    elif result.get("result_state") == "correct_model":
+        explanation_paragraphs = [
+            correction,
+            "Your explanation agrees with the accepted model. Keep testing it against a new situation to check that the idea transfers beyond this example."
+        ]
+    else:
+        explanation_paragraphs = [
+            correction,
+            "A low-confidence result is not a judgment about your ability. Add the reasoning step, evidence, or example that led you to the answer so MindTrace can make a more responsible comparison."
+        ]
     return {
         **result,
         "input": text,
         "topic": topic,
         "candidates": candidates,
         "misconception": matched_entry,
+        "explanation_paragraphs": explanation_paragraphs,
     }
