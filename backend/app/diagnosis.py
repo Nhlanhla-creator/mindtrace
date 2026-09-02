@@ -44,6 +44,7 @@ DEMO_RESPONSES: dict[str, dict[str, Any]] = {
         "evidence_quote": "Objects fall at the same rate regardless of mass",
         "correction": "That is the correct model for ideal free fall: ignoring air resistance, objects near Earth accelerate at approximately 9.8 m/s² regardless of mass.",
         "reasoning": "No documented misconception is supported by this explanation.",
+        "result_state": "correct_model",
     },
 }
 
@@ -69,6 +70,7 @@ def _fallback(text: str, candidates: list[dict[str, Any]]) -> dict[str, Any]:
             "correction": "No documented misconception matched strongly enough. Try explaining the reasoning step that led to your answer.",
             "reasoning": "Retrieval did not produce a strong enough candidate for a responsible diagnosis.",
             "source": "retrieval_fallback",
+            "result_state": "insufficient_evidence",
         }
 
     top = candidates[0]
@@ -80,6 +82,7 @@ def _fallback(text: str, candidates: list[dict[str, Any]]) -> dict[str, Any]:
         "correction": entry["correction_explanation"] if entry else "Review the correct concept and explain your reasoning again.",
         "reasoning": "The diagnosis is based on the highest deterministic retrieval match; live confirmation was unavailable.",
         "source": "retrieval_fallback",
+        "result_state": "misconception",
     }
 
 
@@ -119,7 +122,7 @@ Retrieved candidates:
             return None
         if result.get("confidence") not in {"Confident", "Plausible", "Low Confidence"}:
             return None
-        return {**result, "source": "claude"}
+        return {**result, "source": "claude", "result_state": "correct_model" if result.get("diagnosis") is None else "misconception"}
     except Exception:
         return None
 
@@ -130,7 +133,8 @@ def diagnose(text: str, topic: str | None = None) -> dict[str, Any]:
     result = _cached_response(text) if use_cache else None
     if result is None:
         result = _claude_confirm(text, candidates) or _fallback(text, candidates)
-
+    if "result_state" not in result:
+        result["result_state"] = "correct_model" if result.get("diagnosis") is None else "misconception"
     matched_entry = _entry_by_id(result.get("diagnosis"))
     return {
         **result,

@@ -34,6 +34,18 @@ class Profile:
 
         return {
             "submission_count": len(self.submissions),
+            "history": [
+                {
+                    "input": item.get("input", ""),
+                    "topic": item.get("topic"),
+                    "diagnosis": item.get("diagnosis"),
+                    "confidence": item.get("confidence"),
+                    "result_state": item.get("result_state"),
+                    "source": item.get("source"),
+                    "score": (item.get("candidates") or [{}])[0].get("score", 0),
+                }
+                for item in self.submissions[-10:]
+            ],
             "misconception_counts": dict(counts),
             "topic_counts": dict(topics),
             "drift": drift,

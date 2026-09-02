@@ -103,6 +103,26 @@ async def room_socket(websocket: WebSocket, room_id: str):
             ROOMS.pop(room_id, None)
 
 
+@app.delete("/api/profile/{session_id}")
+def reset_profile(session_id: str):
+    PROFILES.pop(session_id, None)
+    return {"status": "reset", "session_id": session_id}
+
+
+@app.get("/api/readiness")
+def readiness():
+    return {
+        "backend": "ready",
+        "knowledge_base": {"status": "ready", "entries": len(retriever.entries)},
+        "retrieval": "ready",
+        "claude": "configured" if os.getenv("ANTHROPIC_API_KEY") else "not_configured",
+        "demo_cache": os.getenv("USE_CACHED_RESPONSES", "false").casefold() == "true",
+        "speech": "browser_native",
+        "ocr": "local_asset",
+        "collaboration": "ready",
+    }
+
+
 @app.get("/health")
 def health():
     return JSONResponse({"status": "ok", "service": "mindtrace", "stage": "diagnosis"})
